@@ -6,6 +6,7 @@ var index=0;
 var oldPosition=0;
 var currentScene=0;
 
+var scrollTimer = -1;
 
 var Scenes = {"comic": [
 	{
@@ -152,25 +153,66 @@ $(document).ready(function(){
 	
 	document.getElementById("panelContainer").style.height=windowHeight+"px";
 	 for(var i=0; i< Scenes.comic.length; i++) {
-    	if(Scenes.comic[i].dialogue.length>0){
-        	totalScrollArea+=Scenes.comic[i].dialogue.length*10;
-        }
-        else{
-        	totalScrollArea+=Scenes.comic[i].scrollarea;
-        }
-        Scenes.comic[i].scrollarea=totalScrollArea-windowHeight+60;
-    }
-    document.getElementById("comic").style.height=totalScrollArea+"px";
-    document.getElementById("panelContainer").style.backgroundImage="url("+Scenes.comic[0].background+")";
+            if(Scenes.comic[i].dialogue.length>0){
+	    	totalScrollArea+=Scenes.comic[i].dialogue.length*10;
+	    }
+	    else{
+		totalScrollArea+=Scenes.comic[i].scrollarea;
+		}
+		Scenes.comic[i].scrollarea=totalScrollArea-windowHeight+60;
+	}
+	document.getElementById("comic").style.height = totalScrollArea+"px";
+	document.getElementById("panelContainer").style.backgroundImage="url("+Scenes.comic[0].background+")";
 	Scenes.comic[8].dialogue=". . .";
+	
 	
 });
 
-
+var scrollTimer = -1;
 $(window).bind('scroll', function(){ 
-		changeScene();
-	});
+	//sets a timeout when the user stops scrolling, starts the comic from the beginng for next user -- for MoCCA festival demo
+	bodyScroll();
 	
+	//controls the scene changes based on user scoll
+	changeScene();
+});
+	
+
+var scrollTimer = -1;
+var scrolling = -1;
+
+    function bodyScroll() {
+	//if either of these timers are running, kill them while we scroll
+        if (scrolling != -1 || scrollTimer != 1){
+            clearTimeout(scrolling);
+	    clearTimeout(scrollTimer);
+        }
+	console.log(scrollTimer);
+        scrollTimer = window.setTimeout("scrollFinished()", 500);
+    }
+
+    function scrollFinished() {
+	
+	//stop calling scrollFinished because we stopped. and if scrolling is running, kill it so it doesn't duplicate
+	if (scrollTimer != -1 || scrollTimer != 1){
+            clearTimeout(scrolling);
+	    clearTimeout(scrollTimer);
+	}
+	
+	console.log("started timer... stopped scrolling...")
+	scrolling=setTimeout(function(){
+		
+		console.log("--------------------------------------------------It's been 10s, You stopped scrolling! Got bored?");
+		
+		//jump to beginning of commic
+		
+		currentScroll = $("#comic").scrollTop(0);
+		$("#panelContainer").css("background-image", "url("+Scenes.comic[0].background+")");
+		oldPosition=(Scenes.comic[0].scrollarea);
+		currentScene=0;
+		
+	}, 60000); // do this when the user stopped scrolling for 1minute
+    }//end scrollFinished()
 
 function changeScene(){
 
@@ -178,7 +220,7 @@ function changeScene(){
 	for(var i=1;i<Scenes.comic.length; i++){
 		if(currentScroll>Scenes.comic[i-1].scrollarea && currentScroll<=Scenes.comic[i].scrollarea)
 		{
-			$('#panelContainer').css("background-image", "url("+Scenes.comic[i-1].background+")");
+			$("#panelContainer").css("background-image", "url("+Scenes.comic[i-1].background+")");
 			oldPosition=(Scenes.comic[i-1].scrollarea);
 			currentScene=i-1;
 		}
@@ -189,6 +231,6 @@ function changeScene(){
 	temptext = (Scenes.comic[currentScene].dialogue.substring(0,currentPosition))
 	temptext="<p>"+temptext+"</p>"
 	$('#dialogue').html(temptext);
-	document.getElementById("dialogue").style.top=Scenes.comic[currentScene].dialoguex; 
-	document.getElementById("dialogue").style.left=Scenes.comic[currentScene].dialoguey; 
+	document.getElementById("dialogue").style.top = Scenes.comic[currentScene].dialoguex; 
+	document.getElementById("dialogue").style.left = Scenes.comic[currentScene].dialoguey; 
 }

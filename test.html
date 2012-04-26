@@ -1,0 +1,26 @@
+<html>
+<body onscroll="bodyScroll();">
+
+<script language="javascript">
+    var scrollTimer = -1;
+
+    function bodyScroll() {
+        document.body.style.backgroundColor = "white";
+
+        if (scrollTimer != -1)
+            clearTimeout(scrollTimer);
+
+        scrollTimer = window.setTimeout("scrollFinished()", 500);
+    }
+
+    function scrollFinished() {
+        document.body.style.backgroundColor = "red";
+    }
+</script>
+
+<div style="height:2000px;">
+Scroll the page down.  The page will turn red when the scrolling has finished.
+</div>
+
+</body>
+</html>
