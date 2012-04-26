@@ -51,7 +51,8 @@ var Scenes = {"comic": [
 		scrollarea: 0,
 		parachute: "images/parachute2.png",
 		emohair:"images/emohair2.png",
-		dadhair:"images/dadhair2.png"
+		dadhair:"images/dadhair2.png",
+		ants: true
 
 	},
 	{
@@ -63,7 +64,8 @@ var Scenes = {"comic": [
 		scrollarea: 0,
 		parachute: "images/parachute2.png",
 		emohair:"images/emohair3.png",
-		dadhair:"images/dadhair2.png"
+		dadhair:"images/dadhair2.png",
+		ants: true
 	},
 	{
 		name: "shhh",
@@ -96,7 +98,8 @@ var Scenes = {"comic": [
 		scrollarea: 0,
 		parachute: "",
 		emohair:"images/emohair6.png",
-		dadhair:"images/dadhair4.png"
+		dadhair:"images/dadhair4.png",
+		ants: true
 	},
 	{
 		name: "look",
@@ -119,7 +122,8 @@ var Scenes = {"comic": [
 		scrollarea: 0,
 		parachute: "images/parachute2.png",
 		emohair:"images/emohair3.png",
-		dadhair:"images/dadhair2.png"
+		dadhair:"images/dadhair2.png",
+		ants: true
 	},
 	{
 		name: "queen",
@@ -141,7 +145,8 @@ var Scenes = {"comic": [
 		scrollarea: 300,
 		parachute: "images/parachute2.png",
 		emohair:"images/emohair2.png",
-		dadhair:"images/dadhair2.png"
+		dadhair:"images/dadhair2.png",
+		ants: true
 	},
 	
 	
@@ -153,18 +158,19 @@ $(document).ready(function(){
 	
 	document.getElementById("panelContainer").style.height=windowHeight+"px";
 	 for(var i=0; i< Scenes.comic.length; i++) {
+	    //saving the total height of the comic
             if(Scenes.comic[i].dialogue.length>0){
 	    	totalScrollArea+=Scenes.comic[i].dialogue.length*10;
 	    }
 	    else{
 		totalScrollArea+=Scenes.comic[i].scrollarea;
-		}
-		Scenes.comic[i].scrollarea=totalScrollArea-windowHeight+60;
+	    }
+	  //set each panels's scrollarea
+	  Scenes.comic[i].scrollarea=totalScrollArea-windowHeight+60;
 	}
 	document.getElementById("comic").style.height = totalScrollArea+"px";
 	document.getElementById("panelContainer").style.backgroundImage="url("+Scenes.comic[0].background+")";
 	Scenes.comic[8].dialogue=". . .";
-	
 	
 });
 
@@ -175,6 +181,7 @@ $(window).bind('scroll', function(){
 	
 	//controls the scene changes based on user scoll
 	changeScene();
+	
 });
 	
 
@@ -187,8 +194,7 @@ var scrolling = -1;
             clearTimeout(scrolling);
 	    clearTimeout(scrollTimer);
         }
-	console.log(scrollTimer);
-        scrollTimer = window.setTimeout("scrollFinished()", 500);
+	scrollTimer = window.setTimeout("scrollFinished()", 500);
     }
 
     function scrollFinished() {
@@ -202,12 +208,13 @@ var scrolling = -1;
 	console.log("started timer... stopped scrolling...")
 	scrolling=setTimeout(function(){
 		
-		console.log("--------------------------------------------------It's been 10s, You stopped scrolling! Got bored?");
+		//console.log("--------------------------------------------------It's been 10s, You stopped scrolling! Got bored?");
 		
 		//jump to beginning of commic
 		
 		currentScroll = $("#comic").scrollTop(0);
 		$("#panelContainer").css("background-image", "url("+Scenes.comic[0].background+")");
+		$(".ant").remove();
 		oldPosition=(Scenes.comic[0].scrollarea);
 		currentScene=0;
 		
@@ -221,6 +228,18 @@ function changeScene(){
 		if(currentScroll>Scenes.comic[i-1].scrollarea && currentScroll<=Scenes.comic[i].scrollarea)
 		{
 			$("#panelContainer").css("background-image", "url("+Scenes.comic[i-1].background+")");
+			
+			//if this scene has ants
+			if ( Scenes.comic[i-1].ants == true){
+				console.log("scene with ants");
+				//for (a=0; a<Math.ceil(Math.random() * 7) + 5; a++){
+					var newanthtml = "<div class=ant></div>";
+					$("#panelContainer").append(newanthtml);
+				//}
+			}else {
+				$(".ant").remove();
+			}
+			
 			oldPosition=(Scenes.comic[i-1].scrollarea);
 			currentScene=i-1;
 		}

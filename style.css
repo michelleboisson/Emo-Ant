@@ -87,3 +87,45 @@ border-radius: 10px;
 margin:10px;
 font-family: 'UnmaskedBB';
 }
+
+
+@-webkit-keyframes walking {
+	0%
+	{
+		background-position: -0px 0;
+	}
+	
+	49.99%
+	{
+		background-position: 0px 0px;
+	}
+	51%
+	{
+		background-position: 0px -57px;
+	}
+	99.999%
+	{
+		background-position: -0px -57px;
+	}
+	100%
+	{
+		background-position: -0px 0;
+	}		   	
+}
+
+.ant{
+background: url(images/ant-walking.png) no-repeat;
+background-position: 0 0;
+position:fixed;
+top:20px;
+width:97px;
+height:52px;
+
+-webkit-animation-name: walking;
+-webkit-animation-duration: .3s;
+-webkit-animation-iteration-count: infinite;
+-webkit-animation-timing-function: ease;
+}
+
+
+
