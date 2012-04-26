@@ -180,8 +180,19 @@ $(window).bind('scroll', function(){
 	bodyScroll();
 	
 	//controls the scene changes based on user scoll
-	changeScene();
+	//changeScene();
 	
+	currentScroll = $('#comic').scrollTop();
+	console.log(currentScroll);
+	currentScene = getCurrentScene(currentScroll);
+	console.log("currentScene: "+currentScene);
+	
+	if (currentScroll > Scenes.comic[currentScene].scrollarea){
+		setCurrentScene(currentScene++);
+	}
+	if (currentScroll < Scenes.comic[currentScene].scrollarea - Scenes.comic[currentScene-1].scrollarea){
+		setCurrentScene(currentScene--);
+	}
 });
 	
 
@@ -221,16 +232,24 @@ var scrolling = -1;
 	}, 60000); // do this when the user stopped scrolling for 1minute
     }//end scrollFinished()
 
-function changeScene(){
+function getCurrentScene(scrollpos){
 
-	currentScroll = $('#comic').scrollTop();
+	
 	for(var i=1;i<Scenes.comic.length; i++){
-		if(currentScroll>Scenes.comic[i-1].scrollarea && currentScroll<=Scenes.comic[i].scrollarea)
+		if(scrollpos>Scenes.comic[i-1].scrollarea && scrollpos<=Scenes.comic[i].scrollarea)
 		{
-			$("#panelContainer").css("background-image", "url("+Scenes.comic[i-1].background+")");
+			
+			return i-1;
+		}
+	}
+}
+
+function setCurrentScene(thisScene){
+	console.log("Setting scene "+thisScene);
+	$("#panelContainer").css("background-image", "url("+Scenes.comic[thisScene].background+")");
 			
 			//if this scene has ants
-			if ( Scenes.comic[i-1].ants == true){
+			if ( Scenes.comic[thisScene].ants == true){
 				console.log("scene with ants");
 				//for (a=0; a<Math.ceil(Math.random() * 7) + 5; a++){
 					var newanthtml = "<div class=ant></div>";
@@ -240,16 +259,14 @@ function changeScene(){
 				$(".ant").remove();
 			}
 			
-			oldPosition=(Scenes.comic[i-1].scrollarea);
-			currentScene=i-1;
-		}
-	}
-	currentPosition=parseInt((currentScroll-oldPosition)/5);
+			oldPosition=(Scenes.comic[thisScene].scrollarea);
+			currentPosition=parseInt((currentScroll-oldPosition)/5);
 	//console.log(Scenes.comic[currentScene].dialogue[currentPosition]);
 	var temptext;
-	temptext = (Scenes.comic[currentScene].dialogue.substring(0,currentPosition))
+	temptext = (Scenes.comic[thisScene].dialogue.substring(0,currentPosition))
 	temptext="<p>"+temptext+"</p>"
 	$('#dialogue').html(temptext);
-	document.getElementById("dialogue").style.top = Scenes.comic[currentScene].dialoguex; 
-	document.getElementById("dialogue").style.left = Scenes.comic[currentScene].dialoguey; 
+	document.getElementById("dialogue").style.top = Scenes.comic[thisScene].dialoguex; 
+	document.getElementById("dialogue").style.left = Scenes.comic[thisScene].dialoguey; 
+
 }
